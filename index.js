@@ -4,11 +4,14 @@ const http = require('http');
 const { Server } = require('socket.io');
 const mineflayer = require('mineflayer');
 
-const serverHost = process.env.SERVER_HOST || 'DOOMS_DAY_REBORN.aternos.me';
-const serverPort = parseInt(process.env.SERVER_PORT || '59173', 10);
-const botUsername = process.env.BOT_USERNAME || '247_Monitor';
-const minecraftVersion = process.env.MC_VERSION || false;
-const reconnectInterval = parseInt(process.env.RECONNECT_INTERVAL_MS || '40000', 10);
+// Replace the defaults with your Play Hosting details
+const SERVER_HOST = process.env.SERVER_HOST || 'InfernoXStrength.play.hosting'; 
+const SERVER_PORT = process.env.SERVER_PORT || '25565'; 
+const BOT_USERNAME = process.env.BOT_USERNAME || 'Owner';
+const MC_VERSION = process.env.MC_VERSION || '26.2'; // Use your exact server version
+// IMPORTANT: Set this to 60000 (60 seconds) so the bot waits 
+// long enough for the Limbo server to finish booting up before retrying.
+const RECONNECT_INTERVAL_MS = process.env.RECONNECT_INTERVAL_MS || '60000'; 
 const antiAfkInterval = parseInt(process.env.ANTI_AFK_INTERVAL_MS || '20000', 10);
 const httpPort = parseInt(process.env.PORT || '3000', 10);
 
