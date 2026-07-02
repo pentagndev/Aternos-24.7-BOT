@@ -8,7 +8,7 @@ const mineflayer = require('mineflayer');
 const SERVER_HOST = process.env.SERVER_HOST || 'InfernoXStrength.play.hosting'; 
 const SERVER_PORT = process.env.SERVER_PORT || '25565'; 
 const BOT_USERNAME = process.env.BOT_USERNAME || 'Owner';
-const MC_VERSION = process.env.MC_VERSION || '26.2'; // Use your exact server version
+const MC_VERSION = process.env.MC_VERSION || '1.26.2'; // Use your exact server version
 // IMPORTANT: Set this to 60000 (60 seconds) so the bot waits 
 // long enough for the Limbo server to finish booting up before retrying.
 const RECONNECT_INTERVAL_MS = process.env.RECONNECT_INTERVAL_MS || '60000'; 
