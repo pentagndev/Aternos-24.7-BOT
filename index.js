@@ -4,14 +4,13 @@ const http = require('http');
 const { Server } = require('socket.io');
 const mineflayer = require('mineflayer');
 
-// Replace the defaults with your Play Hosting details
+// Configuration
 const SERVER_HOST = process.env.SERVER_HOST || 'InfernoXStrength.play.hosting'; 
-const SERVER_PORT = process.env.SERVER_PORT || '25565'; 
-const BOT_USERNAME = process.env.BOT_USERNAME || 'Keeper_192993';
-const MC_VERSION = process.env.MC_VERSION || '1.26.2'; // Use your exact server version
-// IMPORTANT: Set this to 60000 (60 seconds) so the bot waits 
-// long enough for the Limbo server to finish booting up before retrying.
-const RECONNECT_INTERVAL_MS = process.env.RECONNECT_INTERVAL_MS || '60000'; 
+const SERVER_PORT = parseInt(process.env.SERVER_PORT || '25565', 10); 
+const BOT_USERNAME = process.env.BOT_USERNAME || 'Owner';
+const MC_VERSION = process.env.MC_VERSION || '1.26.2'; 
+
+const RECONNECT_INTERVAL_MS = parseInt(process.env.RECONNECT_INTERVAL_MS || '60000', 10); 
 const antiAfkInterval = parseInt(process.env.ANTI_AFK_INTERVAL_MS || '20000', 10);
 const httpPort = parseInt(process.env.PORT || '3000', 10);
 
@@ -30,7 +29,7 @@ app.get('/health', (req, res) => {
     status: 'ok',
     botRunning: bot !== null,
     botUsername: bot && bot.player ? bot.username : null,
-    target: `${serverHost}:${serverPort}`,
+    target: `${SERVER_HOST}:${SERVER_PORT}`,
   });
 });
 
@@ -88,16 +87,16 @@ function createBot() {
     return;
   }
 
-  console.log(`Connecting bot "${botUsername}" to ${serverHost}:${serverPort} ...`);
-  io.emit('bot_status', `Connecting to ${serverHost}:${serverPort}...`);
+  console.log(`Connecting bot "${BOT_USERNAME}" to ${SERVER_HOST}:${SERVER_PORT} ...`);
+  io.emit('bot_status', `Connecting to ${SERVER_HOST}:${SERVER_PORT}...`);
 
   let newBot;
   try {
     newBot = mineflayer.createBot({
-      host: serverHost,
-      port: serverPort,
-      username: botUsername,
-      version: minecraftVersion,
+      host: SERVER_HOST,
+      port: SERVER_PORT,
+      username: BOT_USERNAME,
+      version: MC_VERSION,
       auth: 'offline',
       hideErrors: false,
     });
@@ -111,7 +110,7 @@ function createBot() {
   bot = newBot;
 
   bot.once('login', () => {
-    console.log(`Bot "${bot.username}" logged in to ${serverHost}.`);
+    console.log(`Bot "${bot.username}" logged in to ${SERVER_HOST}.`);
     io.emit('bot_status', `Bot ${bot.username} logged in.`);
   });
 
@@ -156,7 +155,7 @@ function createBot() {
       io.emit('bot_status', 'Bot stopped.');
       return;
     }
-    io.emit('bot_status', `Disconnected (${reason || 'unknown'}). Reconnecting in ${reconnectInterval / 1000}s.`);
+    io.emit('bot_status', `Disconnected (${reason || 'unknown'}). Reconnecting in ${RECONNECT_INTERVAL_MS / 1000}s.`);
     scheduleReconnect();
   });
 }
@@ -248,7 +247,7 @@ function scheduleReconnect() {
   reconnectTimer = setTimeout(() => {
     reconnectTimer = null;
     if (!bot && !manualStop) createBot();
-  }, reconnectInterval);
+  }, RECONNECT_INTERVAL_MS);
 }
 
 function clearReconnectTimer() {
