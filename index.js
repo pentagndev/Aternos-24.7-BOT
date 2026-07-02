@@ -96,7 +96,6 @@ function createBot() {
       host: SERVER_HOST,
       port: SERVER_PORT,
       username: BOT_USERNAME,
-      // Omit static version property to trigger automatic protocol negotiation
       auth: 'offline',
       hideErrors: false,
     });
@@ -116,18 +115,24 @@ function createBot() {
 
   bot.once('spawn', () => {
     console.log(`Bot "${bot.username}" spawned in the world.`);
-    io.emit('bot_status', `Bot ${bot.username} spawned. Injecting authentication commands.`);
-    
-    // Direct chat packet injection bypasses custom client GUI overlays at the network layer
-    setTimeout(() => {
-      if (bot) {
-        console.log('Sending direct registration and login commands to server...');
-        bot.chat('/register BotGateKeeper123! BotGateKeeper123!');
-        bot.chat('/login BotGateKeeper123!');
-      }
-    }, 2000);
-
+    io.emit('bot_status', `Bot ${bot.username} spawned. Waiting for authentication trigger...`);
     startAntiAfk();
+  });
+
+  // SMART PACKET CHAT INTERCEPTOR
+  bot.on('message', (jsonMsg) => {
+    const message = jsonMsg.toString();
+    
+    // Scans chat stream for AuthMe text prompts to avoid terrain-loading lag
+    if (message.includes('/register')) {
+      console.log('[AUTH INTERCEPT] Found registration message. Transmitting secure credentials...');
+      bot.chat('/register BotGateKeeper123! BotGateKeeper123!');
+    }
+    
+    if (message.includes('/login')) {
+      console.log('[AUTH INTERCEPT] Found login message. Transmitting access key...');
+      bot.chat('/login BotGateKeeper123!');
+    }
   });
 
   bot.on('health', () => {
