@@ -4,12 +4,12 @@ const http = require('http');
 const { Server } = require('socket.io');
 const mineflayer = require('mineflayer');
 
-// Environment Configuration Variables
+// Environment Configuration Variables (Fallback Values Included)
 const SERVER_HOST = process.env.SERVER_HOST || 'InfernoXStrength.play.hosting'; 
 const SERVER_PORT = parseInt(process.env.SERVER_PORT || '25565', 10); 
 const BOT_USERNAME = process.env.BOT_USERNAME || 'gatekeeper_777';
 
-// Delay allows the Play Hosting limbo server time to boot up completely
+// 60 seconds delay allows the Play Hosting limbo server time to boot up completely
 const RECONNECT_INTERVAL_MS = parseInt(process.env.RECONNECT_INTERVAL_MS || '60000', 10); 
 const antiAfkInterval = parseInt(process.env.ANTI_AFK_INTERVAL_MS || '20000', 10);
 const httpPort = parseInt(process.env.PORT || '3000', 10);
@@ -96,6 +96,7 @@ function createBot() {
       host: SERVER_HOST,
       port: SERVER_PORT,
       username: BOT_USERNAME,
+      // Omit static version property to trigger automatic protocol negotiation
       auth: 'offline',
       hideErrors: false,
     });
@@ -113,38 +114,14 @@ function createBot() {
     io.emit('bot_status', `Bot ${bot.username} logged in.`);
   });
 
-  // PACKET INTERCEPTOR FOR DIALOG BOXES & CUSTOM SELECTION GUIs
-  bot.on('windowOpen', async (window) => {
-    console.log(`[PACKET ALERT] Custom Client GUI Overlay Detected! Window ID: ${window.id}`);
-    io.emit('bot_status', `Intercepted Custom GUI Dialog. Sending input responses...`);
-
-    // Settle network stream into buffer memory
-    await new Promise(resolve => setTimeout(resolve, 800));
-
-    try {
-      // 1. Text field focus submission (Forces virtual entry to the open frame context)
-      if (bot.container) {
-        console.log('Clicking interactable elements inside the custom container frame...');
-        await bot.clickWindow(0, 0, 0); 
-      }
-      
-      // 2. Direct string payload execution
-      // Modern authentication APIs fallback to active server chat buffers when handling headless packets
-      bot.chat('BotGateKeeper123!');
-      console.log('Successfully injected custom screen data payload: "BotGateKeeper123!"');
-      
-    } catch (err) {
-      console.error('Failed packet-level interaction with Custom GUI:', err.message);
-    }
-  });
-
   bot.once('spawn', () => {
     console.log(`Bot "${bot.username}" spawned in the world.`);
-    io.emit('bot_status', `Bot ${bot.username} spawned. Holding position.`);
+    io.emit('bot_status', `Bot ${bot.username} spawned. Injecting authentication commands.`);
     
-    // Command layer injection just in case the server maps slash operations beneath the GUI layout
+    // Direct chat packet injection bypasses custom client GUI overlays at the network layer
     setTimeout(() => {
       if (bot) {
+        console.log('Sending direct registration and login commands to server...');
         bot.chat('/register BotGateKeeper123! BotGateKeeper123!');
         bot.chat('/login BotGateKeeper123!');
       }
