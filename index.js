@@ -4,12 +4,12 @@ const http = require('http');
 const { Server } = require('socket.io');
 const mineflayer = require('mineflayer');
 
-// Configuration
+// Environment Configuration Variables (Fallback Values Included)
 const SERVER_HOST = process.env.SERVER_HOST || 'InfernoXStrength.play.hosting'; 
 const SERVER_PORT = parseInt(process.env.SERVER_PORT || '25565', 10); 
-const BOT_USERNAME = process.env.BOT_USERNAME || 'Owner';
-const MC_VERSION = process.env.MC_VERSION || '1.26.2'; 
+const BOT_USERNAME = process.env.BOT_USERNAME || 'Keeper_192993';
 
+// 60 seconds delay allows the Play Hosting limbo server time to boot up completely
 const RECONNECT_INTERVAL_MS = parseInt(process.env.RECONNECT_INTERVAL_MS || '60000', 10); 
 const antiAfkInterval = parseInt(process.env.ANTI_AFK_INTERVAL_MS || '20000', 10);
 const httpPort = parseInt(process.env.PORT || '3000', 10);
@@ -96,7 +96,7 @@ function createBot() {
       host: SERVER_HOST,
       port: SERVER_PORT,
       username: BOT_USERNAME,
-      version: MC_VERSION,
+      // Omitting fixed version property to bypass protocol conflicts and let plugins auto-negotiate
       auth: 'offline',
       hideErrors: false,
     });
