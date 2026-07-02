@@ -7,7 +7,7 @@ const mineflayer = require('mineflayer');
 // Environment Configuration Variables (Fallback Values Included)
 const SERVER_HOST = process.env.SERVER_HOST || 'InfernoXStrength.play.hosting'; 
 const SERVER_PORT = parseInt(process.env.SERVER_PORT || '25565', 10); 
-const BOT_USERNAME = process.env.BOT_USERNAME || 'gatekeeper_777';
+const BOT_USERNAME = process.env.BOT_USERNAME || 'AFK_Watcher_99';
 
 // 60 seconds delay allows the Play Hosting limbo server time to boot up completely
 const RECONNECT_INTERVAL_MS = parseInt(process.env.RECONNECT_INTERVAL_MS || '60000', 10); 
