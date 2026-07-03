@@ -5,7 +5,7 @@ const { Server } = require('socket.io');
 const mineflayer = require('mineflayer');
 
 // Environment Configuration Variables (Fallback Values Included)
-const SERVER_HOST = process.env.SERVER_HOST || 'InfernoXStrength.play.hosting'; 
+const SERVER_HOST = process.env.SERVER_HOST || 'pentagnbyte.play.hosting'; 
 const SERVER_PORT = parseInt(process.env.SERVER_PORT || '25565', 10); 
 const BOT_USERNAME = process.env.BOT_USERNAME || 'AFK_Watcher_99';
 
